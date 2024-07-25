@@ -1,11 +1,15 @@
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
+
 const express = require('express')
 const cors = require('cors')
 const Pusher = require("pusher");
 
 const pusher = new Pusher({
-  appId: "1839197",
-  key: "059cadb91ce869a467cf",
-  secret: "eb4b411c43233ae9d6f4",
+  appId: process.env.APP_ID,
+  key: process.env.API_KEY,
+  secret: process.env.SECRET_KEY,
   cluster: "eu",
   useTLS: true
 });
@@ -19,7 +23,7 @@ app.use(cors({
 app.use(express.json())
 
 app.post('/api/messages', async (req, res) => {
-    await pusher.trigger("my-channel", "my-event", {
+    await pusher.trigger(process.env.CHANNEL, process.env.EVENT, {
         username: req.body.username,
         message: req.body.message
       });
@@ -27,5 +31,5 @@ app.post('/api/messages', async (req, res) => {
       res.json([]);
 })
 
-console.log('listening to port 8000');
+console.log('listening to port 8080');
 app.listen(8000);
